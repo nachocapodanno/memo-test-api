@@ -1,0 +1,70 @@
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+"Indicates what fields are available at the top level of a query operation."
+type Query {
+    "Find a single user by an identifying attribute."
+    user(
+      "Search by primary key."
+      id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
+
+      "Search by email address."
+      email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
+    ): User @find
+
+    "List multiple users."
+    users(
+      "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+      name: String @where(operator: "like")
+    ): [User!]! @paginate(defaultCount: 10)
+
+    "List memo tests."
+    memoTests: [MemoTest!]! @paginate(defaultCount: 10)
+
+    "Find memo test by id with all its images."
+    memoTest(id: ID! @eq): MemoTest @find
+
+}
+
+type Mutation {
+    createMemoTest(input: CreateMemoTestInput!): MemoTest!
+
+    deleteMemoTest(id: ID!): Boolean!
+
+    addImagesToMemoTest(id: ID!, images: [String!]! @rules(apply: ["url"])): MemoTest @rulesForArray(field: "images")
+
+    removeImagesFromMemoTest(id: ID!, images: [String!]! @rules(apply: ["url"])): MemoTest @rulesForArray(field: "images")
+
+}
+
+type MemoTest {
+    id: ID!
+    name: String!
+    images: [String!]! @field(resolver: "App\\GraphQL\\Queries\\MemoTestQuery@images")
+}
+
+input CreateMemoTestInput {
+  name: String!
+  images: [String!] @rules(apply: ["url"])
+}
+
+"Account of a person who utilizes this application."
+type User {
+    "Unique primary key."
+    id: ID!
+
+    "Non-unique name."
+    name: String!
+
+    "Unique email address."
+    email: String!
+
+    "When the email was verified."
+    email_verified_at: DateTime
+
+    "When the account was created."
+    created_at: DateTime!
+
+    "When the account was last updated."
+    updated_at: DateTime!
+}
