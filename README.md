@@ -64,13 +64,13 @@ cp .env.example .env
 ./vendor/bin/sail up
 ```
 
-<p>3. Run migrations</p>
+<p>3. Run migrations (in other tab while container is up)</p>
 
 ```
 ./vendor/bin/sail php artisan migrate
 ```
 
-<p>4. Run seeders</p>
+<p>4. Run seeders (in other tab while container is up)</p>
 
 ```
 ./vendor/bin/sail php artisan db:seed
