@@ -7,10 +7,10 @@
 <b>Mutations:</b>
 <ul>
 <li>
-Create a memo test with an id (pk), name (string), and a list of images received
+Create a memo test with an id (pk), name (string), and a list of images received as URLs of images hosted on the server or internet
 </li>
 <li>
-Create a memo test with an id (pk), name (string), and a list of images received
+Add and remove images from a memo test by id
 </li>
 <li>
 Delete a memo test
