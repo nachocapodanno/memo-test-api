@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('memo_test_id');
             $table->unsignedBigInteger('retries')->default(0);
             $table->unsignedBigInteger('number_of_pairs')->default(0);
-            $table->enum('state', ['Started', 'Completed'])->default('Started');
+            $table->enum('state', ['started', 'completed'])->default('started');
             $table->timestamps();
     
             $table->foreign('memo_test_id')->references('id')->on('memo_tests');

@@ -1,21 +1,24 @@
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
-scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar DateTime
+    @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
 "Indicates what fields are available at the top level of a query operation."
 type Query {
     "Find a single user by an identifying attribute."
     user(
-      "Search by primary key."
-      id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
+        "Search by primary key."
+        id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
 
-      "Search by email address."
-      email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
+        "Search by email address."
+        email: String
+            @eq
+            @rules(apply: ["prohibits:id", "required_without:id", "email"])
     ): User @find
 
     "List multiple users."
     users(
-      "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
-      name: String @where(operator: "like")
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        name: String @where(operator: "like")
     ): [User!]! @paginate(defaultCount: 10)
 
     "List memo tests."
@@ -24,6 +27,9 @@ type Query {
     "Find memo test by id with all its images."
     memoTest(id: ID! @eq): MemoTest @find
 
+    "Find game session by id."
+    gameSession(id: ID! @eq): GameSession @find
+
 }
 
 type Mutation {
@@ -31,22 +37,44 @@ type Mutation {
 
     deleteMemoTest(id: ID!): Boolean!
 
-    addImagesToMemoTest(id: ID!, images: [String!]! @rules(apply: ["url"])): MemoTest @rulesForArray(field: "images")
+    addImagesToMemoTest(
+        id: ID!
+        images: [String!]! @rules(apply: ["url"])
+    ): MemoTest @rulesForArray(field: "images")
 
-    removeImagesFromMemoTest(id: ID!, images: [String!]! @rules(apply: ["url"])): MemoTest @rulesForArray(field: "images")
+    removeImagesFromMemoTest(
+        id: ID!
+        images: [String!]! @rules(apply: ["url"])
+    ): MemoTest @rulesForArray(field: "images")
+
+    createGameSession(memoTestId: ID!): GameSession!
+
+    endGameSession(id: ID!): GameSession!
+
+    updateGameSessionRetries(id: ID!, retries: Int! @rules(apply: ["integer", "min:1"])): GameSession!
 
 }
 
 type MemoTest {
     id: ID!
     name: String!
-    images: [String!]! @field(resolver: "App\\GraphQL\\Queries\\MemoTestQuery@images")
+    images: [String!]!
+        @field(resolver: "App\\GraphQL\\Queries\\MemoTestQuery@images")
 }
 
 input CreateMemoTestInput {
-  name: String!
-  images: [String!] @rules(apply: ["url"])
+    name: String!
+    images: [String!] @rules(apply: ["url"])
 }
+
+type GameSession {
+    id: ID!
+    memoTestId: ID! @rename(attribute: "memo_test_id")
+    retries: Int!
+    numberOfPairs: Int! @rename(attribute: "number_of_pairs")
+    state: String!
+}
+
 
 "Account of a person who utilizes this application."
 type User {

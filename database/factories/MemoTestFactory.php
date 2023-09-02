@@ -18,6 +18,7 @@ class MemoTestFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'images' => json_encode([fake()->imageUrl()]),
         ];
     }
 }
