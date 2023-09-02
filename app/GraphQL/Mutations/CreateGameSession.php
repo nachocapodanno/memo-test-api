@@ -10,8 +10,6 @@ class CreateGameSession
 {
     public function __invoke($_, array $args)
     {
-        // Verificar la autenticación del usuario si es necesario
-        // $user = Auth::user();
         $memoTest = MemoTest::find($args['memoTestId']);
         if (!$memoTest) {
             throw new Error("MemoTest with ID {$args['memoTestId']} not found.");
@@ -19,6 +17,7 @@ class CreateGameSession
 
         $gameSession = new GameSession([
             'memo_test_id' => $args['memoTestId'],
+            'number_of_pairs' => count(json_decode($memoTest->images)),
         ]);
 
         $gameSession->save();

@@ -14,5 +14,5 @@ class GameSession extends Model
      *
      * @var array
      */
-    protected $fillable = ['memo_test_id'];
+    protected $fillable = ['memo_test_id', 'number_of_pairs'];
 }
