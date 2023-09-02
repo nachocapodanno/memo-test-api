@@ -37,7 +37,8 @@ class GameSessionTest extends TestCase
             'data' => [
                 'createGameSession' => [
                     'memoTestId' => $memoTest->id,
-                    'state' => 'started',
+                    'state' => GameSessionStateEnum::STARTED,
+                    'numberOfPairs' => count(json_decode($memoTest->images)),
                 ],
             ],
         ]);
